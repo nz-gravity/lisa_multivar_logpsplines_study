@@ -1,0 +1,6 @@
+*
+!*/
+!*.py
+!*//*.py
+!README.md
+!.gitignore
