@@ -20,7 +20,7 @@ from log_psplines.pipeline.preprocessing import align_true_psd_to_freq
 from log_psplines.preprocessing.coarse_grain import CoarseGrainConfig
 from log_psplines.plotting import plot_psd_matrix, PSDMatrixPlotSpec
 from log_psplines.plotting.psd_matrix import extract_plotting_data
-from lisa_data import LOW_FREQ_BIN_TRIM, interpolate_spectral_matrix
+from src.load_data import LOW_FREQ_BIN_TRIM, interpolate_spectral_matrix
 
 
 M_AET: np.ndarray = np.array(
