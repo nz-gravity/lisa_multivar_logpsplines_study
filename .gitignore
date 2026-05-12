@@ -4,3 +4,8 @@
 !*//*.py
 !README.md
 !.gitignore
+!CLAUDE.md
+
+# Large data and output trees are not tracked
+data/
+out/

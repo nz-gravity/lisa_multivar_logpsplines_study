@@ -209,10 +209,11 @@ class LISAData:
         elif reference == "welch":
             true_matrix = matrix  # Welch estimate (~1000 averages) is the best available reference
         elif reference == "segwo":
-            segwo_path = path.parent / "segwo_true_cov.npz"
+            # Resolve relative to this file's project root so it works from any cwd.
+            segwo_path = Path(__file__).parent.parent / "data" / "noise5a_segwo_ref.npz"
             if not segwo_path.exists():
                 raise FileNotFoundError(
-                    f"SEGWO covariance not found at {segwo_path}; run segwo_fit.py first."
+                    f"SEGWO covariance not found at {segwo_path}; run src/segwo.py first."
                 )
             _d = np.load(segwo_path)
             true_matrix = interpolate_spectral_matrix(_d["freq"], _d["cov"], freq)
