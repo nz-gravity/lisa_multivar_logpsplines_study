@@ -10,7 +10,318 @@ Usage
 -----
   python kfold_compare.py --dataset noise4a --duration-days 14 --n-folds 5
   python kfold_compare.py --dataset noise4a --duration-days 14 --n-folds 3 --eta 0.5
-"""
+
+  ============================================================
+K-fold ELPD: model=H1  dataset=noise4a  dur=14.0d  K=3  eta=0.5
+============================================================
+Loaded 15778801 samples from data/noise4a.h5 (fs=0.500000 Hz); using 15777801 after edge trim. reference='analytic'.
+Traceback (most recent call last):
+  File "/Users/avi/Documents/projects/lisa_logpspline/kfold_compare.py", line 472, in <module>
+    main()
+  File "/Users/avi/Documents/projects/lisa_logpspline/kfold_compare.py", line 433, in main
+    results[model] = run_kfold(
+                     ^^^^^^^^^^
+  File "/Users/avi/Documents/projects/lisa_logpspline/kfold_compare.py", line 301, in run_kfold
+    class _Args:
+  File "/Users/avi/Documents/projects/lisa_logpspline/kfold_compare.py", line 302, in _Args
+    duration_days = duration_days
+                    ^^^^^^^^^^^^^
+NameError: name 'duration_days' is not defined. Did you mean: 'duration_slug'?
+➜  lisa_logpspline git:(main) ✗ python kfold_compare.py --dataset noise4a --duration-days 14 --n-folds 3 --eta 0.5
+
+============================================================
+K-fold ELPD: model=H1  dataset=noise4a  dur=14.0d  K=3  eta=0.5
+============================================================
+Loaded 15778801 samples from data/noise4a.h5 (fs=0.500000 Hz); using 15777801 after edge trim. reference='analytic'.
+|00:02| LogPSpline | INFO | Wishart averaging (blocks=2): n=604800 -> Lb=302400, N=60420, p=3
+|00:02| LogPSpline | INFO | Standardized data: scale ~2.73e-11
+|00:02| LogPSpline | INFO | Inferred sampler type: multivar_blocked_nuts
+|00:02| LogPSpline | INFO | Nl trimmed to 60416 (dropped 4 trailing bins) to make Nc=1024 an exact divisor.
+|00:02| LogPSpline | INFO | Coarse-grained multivariate FFT: CoarseGrainSpec(Nc=1024, Nh=59, Nl=60416 (kept 1.7%, decimated 98.3%).
+|00:02| LogPSpline | INFO | Null-band excision: removing 6 bins across 3 band(s). 1018 bins retained.
+
+[H1] n_freq=1018, Nb=2, eta=0.5, K=3
+  Fold 1/3: train=679 bins, held=339 bins
+|00:03| LogPSpline | INFO | Saved preprocessing eigenvalue plot to out/kfold/noise4a/14d/eta0.5/K3/H1/fold_00/diagnostics/preprocessing_eigenvalue_ratios.png
+|00:03| LogPSpline | INFO | Adjusting explicit coarse VI bins: N_full=679 not divisible by Nc=256; using Nc=97.
+|00:03| LogPSpline | INFO | Coarse-grained multivariate FFT: CoarseGrainSpec(Nc=97, Nh=7, Nl=679 (kept 14.3%, decimated 85.7%).
+|00:19| LogPSpline | INFO | Spline model: MultivariateLogPSplines(channels=3, knots=mixed[2-50], degree=2, penaltyOrder=2, N=679, basis_shapes=[(679, 51), (679, 51), (679, 51), (679, 3), (679, 3), (679, 3), (679, 3), (679, 3), (679, 3)])
+Running chain 1: 100%|███████████████████| 3500/3500 [00:01<00:00, 2924.93it/s]
+Running chain 3: 100%|███████████████████| 3500/3500 [00:01<00:00, 2904.06it/s]
+Running chain 2: 100%|███████████████████| 3500/3500 [00:01<00:00, 2885.28it/s]
+Running chain 0: 100%|███████████████████| 3500/3500 [00:01<00:00, 2488.61it/s]
+Running chain 0: 100%|███████████████████| 3500/3500 [00:02<00:00, 1300.84it/s]
+Running chain 2: 100%|███████████████████| 3500/3500 [00:02<00:00, 1249.96it/s]
+Running chain 1: 100%|███████████████████| 3500/3500 [00:02<00:00, 1236.95it/s]
+Running chain 3: 100%|███████████████████| 3500/3500 [00:02<00:00, 1191.06it/s]
+Running chain 0: 100%|████████████████████| 3500/3500 [00:05<00:00, 641.82it/s]
+Running chain 3: 100%|████████████████████| 3500/3500 [00:05<00:00, 626.64it/s]
+Running chain 2: 100%|████████████████████| 3500/3500 [00:05<00:00, 622.72it/s]
+Running chain 1: 100%|████████████████████| 3500/3500 [00:05<00:00, 592.37it/s]
+    elpd = -21080.43%|██████████████████ | 3325/3500 [00:05<00:00, 1782.32it/s]
+  Fold 2/3: train=679 bins, held=339 bins
+|00:32| LogPSpline | INFO | Saved preprocessing eigenvalue plot to out/kfold/noise4a/14d/eta0.5/K3/H1/fold_01/diagnostics/preprocessing_eigenvalue_ratios.png
+|00:32| LogPSpline | INFO | Adjusting explicit coarse VI bins: N_full=679 not divisible by Nc=256; using Nc=97.
+|00:32| LogPSpline | INFO | Coarse-grained multivariate FFT: CoarseGrainSpec(Nc=97, Nh=7, Nl=679 (kept 14.3%, decimated 85.7%).
+|00:45| LogPSpline | INFO | Spline model: MultivariateLogPSplines(channels=3, knots=mixed[2-50], degree=2, penaltyOrder=2, N=679, basis_shapes=[(679, 51), (679, 51), (679, 51), (679, 3), (679, 3), (679, 3), (679, 3), (679, 3), (679, 3)])
+Running chain 0: 100%|███████████████████| 3500/3500 [00:01<00:00, 2955.52it/s]
+Running chain 1: 100%|███████████████████| 3500/3500 [00:01<00:00, 2901.18it/s]
+Running chain 2: 100%|███████████████████| 3500/3500 [00:01<00:00, 2763.97it/s]
+Running chain 3: 100%|███████████████████| 3500/3500 [00:01<00:00, 2485.18it/s]
+Running chain 1: 100%|███████████████████| 3500/3500 [00:02<00:00, 1208.02it/s]
+Running chain 0: 100%|███████████████████| 3500/3500 [00:02<00:00, 1207.02it/s]
+Running chain 3: 100%|███████████████████| 3500/3500 [00:02<00:00, 1195.78it/s]
+Running chain 2: 100%|███████████████████| 3500/3500 [00:03<00:00, 1151.70it/s]
+Running chain 1: 100%|█████████████████████| 3500/3500 [00:59<00:00, 59.07it/s]
+Running chain 2: 100%|█████████████████████| 3500/3500 [00:59<00:00, 58.46it/s]
+Running chain 3: 100%|█████████████████████| 3500/3500 [00:59<00:00, 58.45it/s]
+Running chain 0: 100%|█████████████████████| 3500/3500 [01:00<00:00, 58.07it/s]
+    elpd = -7226380.76
+  Fold 3/3: train=678 bins, held=340 bins█| 3500/3500 [00:59<00:00, 209.16it/s]
+|01:54| LogPSpline | INFO | Saved preprocessing eigenvalue plot to out/kfold/noise4a/14d/eta0.5/K3/H1/fold_02/diagnostics/preprocessing_eigenvalue_ratios.png
+|01:54| LogPSpline | INFO | Adjusting explicit coarse VI bins: N_full=678 not divisible by Nc=256; using Nc=226.
+|01:54| LogPSpline | INFO | Coarse-grained multivariate FFT: CoarseGrainSpec(Nc=226, Nh=3, Nl=678 (kept 33.3%, decimated 66.7%).
+|02:08| LogPSpline | INFO | Spline model: MultivariateLogPSplines(channels=3, knots=mixed[2-50], degree=2, penaltyOrder=2, N=678, basis_shapes=[(678, 51), (678, 51), (678, 51), (678, 3), (678, 3), (678, 3), (678, 3), (678, 3), (678, 3)])
+Running chain 1: 100%|███████████████████| 3500/3500 [00:01<00:00, 2969.45it/s]
+Running chain 0: 100%|███████████████████| 3500/3500 [00:01<00:00, 2123.39it/s]
+Running chain 3: 100%|███████████████████| 3500/3500 [00:01<00:00, 2112.89it/s]
+Running chain 2: 100%|███████████████████| 3500/3500 [00:01<00:00, 1994.25it/s]
+Running chain 1: 100%|███████████████████| 3500/3500 [00:02<00:00, 1209.88it/s]
+Running chain 2: 100%|███████████████████| 3500/3500 [00:02<00:00, 1197.77it/s]
+Running chain 3: 100%|███████████████████| 3500/3500 [00:02<00:00, 1166.90it/s]
+Running chain 0: 100%|███████████████████| 3500/3500 [00:03<00:00, 1161.58it/s]
+Running chain 3: 100%|█████████████████████| 3500/3500 [00:53<00:00, 65.58it/s]
+Running chain 0: 100%|█████████████████████| 3500/3500 [00:53<00:00, 65.27it/s]
+Running chain 1: 100%|█████████████████████| 3500/3500 [00:53<00:00, 65.12it/s]
+Running chain 2: 100%|█████████████████████| 3500/3500 [00:54<00:00, 64.35it/s]
+    elpd = -1466643.15███████████████████ | 3325/3500 [00:53<00:00, 235.68it/s]
+Running chain 2: 100%|████████████████████| 3500/3500 [00:54<00:00, 244.07it/s]
+============================================================
+K-fold ELPD: model=H3  dataset=noise4a  dur=14.0d  K=3  eta=0.5
+============================================================
+Loaded 15778801 samples from data/noise4a.h5 (fs=0.500000 Hz); using 15777801 after edge trim. reference='analytic'.
+|03:12| LogPSpline | INFO | Wishart averaging (blocks=2): n=604800 -> Lb=302400, N=60420, p=3
+|03:12| LogPSpline | INFO | Standardized data: scale ~2.73e-11
+|03:12| LogPSpline | INFO | Inferred sampler type: multivar_blocked_nuts
+|03:12| LogPSpline | INFO | Nl trimmed to 60416 (dropped 4 trailing bins) to make Nc=1024 an exact divisor.
+|03:12| LogPSpline | INFO | Coarse-grained multivariate FFT: CoarseGrainSpec(Nc=1024, Nh=59, Nl=60416 (kept 1.7%, decimated 98.3%).
+|03:12| LogPSpline | INFO | Null-band excision: removing 6 bins across 3 band(s). 1018 bins retained.
+
+[H3] n_freq=1018, Nb=2, eta=0.5, K=3
+  Fold 1/3: train=679 bins, held=339 bins
+|03:13| LogPSpline | INFO | Saved preprocessing eigenvalue plot to out/kfold/noise4a/14d/eta0.5/K3/H3/fold_00/diagnostics/preprocessing_eigenvalue_ratios.png
+|03:13| LogPSpline | INFO | Adjusting explicit coarse VI bins: N_full=679 not divisible by Nc=256; using Nc=97.
+|03:13| LogPSpline | INFO | Coarse-grained multivariate FFT: CoarseGrainSpec(Nc=97, Nh=7, Nl=679 (kept 14.3%, decimated 85.7%).
+|03:30| LogPSpline | INFO | Spline model: MultivariateLogPSplines(channels=3, knots=mixed[2-50], degree=2, penaltyOrder=2, N=679, basis_shapes=[(679, 51), (679, 51), (679, 51), (679, 51), (679, 51), (679, 51), (679, 3), (679, 3), (679, 3)])
+Running chain 1: 100%|███████████████████| 3500/3500 [00:01<00:00, 3097.09it/s]
+Running chain 0: 100%|███████████████████| 3500/3500 [00:01<00:00, 2996.48it/s]
+Running chain 3: 100%|███████████████████| 3500/3500 [00:01<00:00, 2884.71it/s]
+Running chain 2: 100%|███████████████████| 3500/3500 [00:01<00:00, 2514.98it/s]
+Running chain 2: 100%|████████████████████| 3500/3500 [00:11<00:00, 317.71it/s]
+Running chain 1: 100%|████████████████████| 3500/3500 [00:11<00:00, 311.76it/s]
+Running chain 3: 100%|████████████████████| 3500/3500 [00:11<00:00, 307.56it/s]
+Running chain 0: 100%|████████████████████| 3500/3500 [00:12<00:00, 280.87it/s]
+Running chain 3: 100%|█████████████████████| 3500/3500 [00:48<00:00, 71.95it/s]
+Running chain 1: 100%|█████████████████████| 3500/3500 [00:48<00:00, 71.91it/s]
+Running chain 2: 100%|█████████████████████| 3500/3500 [00:50<00:00, 69.96it/s]
+Running chain 0: 100%|█████████████████████| 3500/3500 [00:50<00:00, 69.02it/s]
+    elpd = -21083.13%|████████████████████| 3500/3500 [00:50<00:00, 347.20it/s]
+  Fold 2/3: train=679 bins, held=339 bins
+|04:37| LogPSpline | INFO | Saved preprocessing eigenvalue plot to out/kfold/noise4a/14d/eta0.5/K3/H3/fold_01/diagnostics/preprocessing_eigenvalue_ratios.png
+|04:37| LogPSpline | INFO | Adjusting explicit coarse VI bins: N_full=679 not divisible by Nc=256; using Nc=97.
+|04:37| LogPSpline | INFO | Coarse-grained multivariate FFT: CoarseGrainSpec(Nc=97, Nh=7, Nl=679 (kept 14.3%, decimated 85.7%).
+|04:55| LogPSpline | INFO | Spline model: MultivariateLogPSplines(channels=3, knots=mixed[2-50], degree=2, penaltyOrder=2, N=679, basis_shapes=[(679, 51), (679, 51), (679, 51), (679, 51), (679, 51), (679, 51), (679, 3), (679, 3), (679, 3)])
+Running chain 3: 100%|███████████████████| 3500/3500 [00:01<00:00, 3001.36it/s]
+Running chain 1: 100%|███████████████████| 3500/3500 [00:01<00:00, 2965.40it/s]
+Running chain 0: 100%|███████████████████| 3500/3500 [00:01<00:00, 2323.30it/s]
+Running chain 2: 100%|███████████████████| 3500/3500 [00:01<00:00, 2322.14it/s]
+Running chain 2: 100%|████████████████████| 3500/3500 [00:13<00:00, 255.43it/s]
+Running chain 0: 100%|████████████████████| 3500/3500 [00:13<00:00, 252.10it/s]
+Running chain 1: 100%|████████████████████| 3500/3500 [00:14<00:00, 235.69it/s]
+Running chain 3: 100%|████████████████████| 3500/3500 [00:14<00:00, 234.22it/s]
+Running chain 2: 100%|█████████████████████| 3500/3500 [00:56<00:00, 61.93it/s]
+Running chain 3: 100%|█████████████████████| 3500/3500 [00:56<00:00, 61.52it/s]
+Running chain 1: 100%|█████████████████████| 3500/3500 [00:58<00:00, 59.68it/s]
+Running chain 0: 100%|█████████████████████| 3500/3500 [01:14<00:00, 46.86it/s]
+    elpd = -5765610.83████████████████████| 3500/3500 [00:56<00:00, 339.52it/s]
+  Fold 3/3: train=678 bins, held=340 bins
+|06:30| LogPSpline | INFO | Saved preprocessing eigenvalue plot to out/kfold/noise4a/14d/eta0.5/K3/H3/fold_02/diagnostics/preprocessing_eigenvalue_ratios.png
+|06:30| LogPSpline | INFO | Adjusting explicit coarse VI bins: N_full=678 not divisible by Nc=256; using Nc=226.
+|06:30| LogPSpline | INFO | Coarse-grained multivariate FFT: CoarseGrainSpec(Nc=226, Nh=3, Nl=678 (kept 33.3%, decimated 66.7%).
+|06:46| LogPSpline | INFO | Spline model: MultivariateLogPSplines(channels=3, knots=mixed[2-50], degree=2, penaltyOrder=2, N=678, basis_shapes=[(678, 51), (678, 51), (678, 51), (678, 51), (678, 51), (678, 51), (678, 3), (678, 3), (678, 3)])
+Running chain 0: 100%|███████████████████| 3500/3500 [00:01<00:00, 3178.99it/s]
+Running chain 2: 100%|███████████████████| 3500/3500 [00:01<00:00, 3121.18it/s]
+Running chain 1: 100%|███████████████████| 3500/3500 [00:01<00:00, 3088.20it/s]
+Running chain 3: 100%|███████████████████| 3500/3500 [00:01<00:00, 2502.97it/s]
+Running chain 2: 100%|████████████████████| 3500/3500 [00:10<00:00, 322.66it/s]
+Running chain 1: 100%|████████████████████| 3500/3500 [00:10<00:00, 321.69it/s]
+Running chain 3: 100%|████████████████████| 3500/3500 [00:11<00:00, 315.45it/s]
+Running chain 0: 100%|████████████████████| 3500/3500 [00:11<00:00, 312.66it/s]
+Running chain 2: 100%|█████████████████████| 3500/3500 [00:55<00:00, 62.70it/s]
+Running chain 0: 100%|█████████████████████| 3500/3500 [00:55<00:00, 62.65it/s]
+Running chain 1: 100%|█████████████████████| 3500/3500 [00:56<00:00, 61.58it/s]
+Running chain 3: 100%|█████████████████████| 3500/3500 [00:59<00:00, 59.19it/s]
+    elpd = -1476215.46
+Running chain 3:  85%|█████████████████   | 2975/3500 [00:56<00:02, 195.71it/s]
+============================================================<00:00, 210.58it/s]
+SUMMARY  dataset=noise4a  dur=14.0d  K=3  eta=0.5
+============================================================
+  H1: elpd = -8714104.34 ± 6602294.37
+  H3: elpd = -7262909.41 ± 5172809.74
+
+  Δelpd (H3 - H1) = 1451194.93 ± 1465580.87  (paired)
+  → Not significant  (|Δ|/SE = 1.0)
+
+Results saved to /Users/avi/Documents/projects/lisa_logpspline/out/kfold/noise4a/14d/eta0.5/K3
+➜  lisa_logpspline git:(main) ✗ python kfold_compare.py --dataset noise5a --duration-days 14 --n-folds 3 --eta 0.5
+
+============================================================
+K-fold ELPD: model=H1  dataset=noise5a  dur=14.0d  K=3  eta=0.5
+============================================================
+Loaded 15778801 samples from data/noise5a.h5 (fs=0.500000 Hz); using 15777801 after edge trim. reference='segwo'.
+|00:02| LogPSpline | INFO | Wishart averaging (blocks=2): n=604800 -> Lb=302400, N=60420, p=3
+|00:02| LogPSpline | INFO | Standardized data: scale ~5.18e-11
+|00:02| LogPSpline | INFO | Inferred sampler type: multivar_blocked_nuts
+|00:02| LogPSpline | INFO | Nl trimmed to 60416 (dropped 4 trailing bins) to make Nc=1024 an exact divisor.
+|00:02| LogPSpline | INFO | Coarse-grained multivariate FFT: CoarseGrainSpec(Nc=1024, Nh=59, Nl=60416 (kept 1.7%, decimated 98.3%).
+|00:02| LogPSpline | INFO | Null-band excision: removing 6 bins across 3 band(s). 1018 bins retained.
+
+[H1] n_freq=1018, Nb=2, eta=0.5, K=3
+  Fold 1/3: train=679 bins, held=339 bins
+|00:03| LogPSpline | INFO | Saved preprocessing eigenvalue plot to out/kfold/noise5a/14d/eta0.5/K3/H1/fold_00/diagnostics/preprocessing_eigenvalue_ratios.png
+|00:03| LogPSpline | INFO | Adjusting explicit coarse VI bins: N_full=679 not divisible by Nc=256; using Nc=97.
+|00:03| LogPSpline | INFO | Coarse-grained multivariate FFT: CoarseGrainSpec(Nc=97, Nh=7, Nl=679 (kept 14.3%, decimated 85.7%).
+|00:18| LogPSpline | INFO | Spline model: MultivariateLogPSplines(channels=3, knots=mixed[2-50], degree=2, penaltyOrder=2, N=679, basis_shapes=[(679, 51), (679, 51), (679, 51), (679, 3), (679, 3), (679, 3), (679, 3), (679, 3), (679, 3)])
+Running chain 1: 100%|███████████████████| 3500/3500 [00:01<00:00, 3295.20it/s]
+Running chain 0: 100%|███████████████████| 3500/3500 [00:01<00:00, 3256.02it/s]
+Running chain 3: 100%|███████████████████| 3500/3500 [00:01<00:00, 3218.02it/s]
+Running chain 2: 100%|███████████████████| 3500/3500 [00:01<00:00, 3081.38it/s]
+Running chain 1: 100%|███████████████████| 3500/3500 [00:02<00:00, 1331.17it/s]
+Running chain 0: 100%|███████████████████| 3500/3500 [00:02<00:00, 1288.96it/s]
+Running chain 3: 100%|███████████████████| 3500/3500 [00:02<00:00, 1267.22it/s]
+Running chain 2: 100%|███████████████████| 3500/3500 [00:02<00:00, 1222.35it/s]
+Running chain 1: 100%|████████████████████| 3500/3500 [00:05<00:00, 656.17it/s]
+Running chain 3: 100%|████████████████████| 3500/3500 [00:05<00:00, 652.09it/s]
+Running chain 2: 100%|████████████████████| 3500/3500 [00:05<00:00, 637.76it/s]
+Running chain 0: 100%|████████████████████| 3500/3500 [00:05<00:00, 636.95it/s]
+    elpd = -22682.80%|██████████████████ | 3325/3500 [00:05<00:00, 1788.00it/s]
+  Fold 2/3: train=679 bins, held=339 bins
+|00:31| LogPSpline | INFO | Saved preprocessing eigenvalue plot to out/kfold/noise5a/14d/eta0.5/K3/H1/fold_01/diagnostics/preprocessing_eigenvalue_ratios.png
+|00:31| LogPSpline | INFO | Adjusting explicit coarse VI bins: N_full=679 not divisible by Nc=256; using Nc=97.
+|00:31| LogPSpline | INFO | Coarse-grained multivariate FFT: CoarseGrainSpec(Nc=97, Nh=7, Nl=679 (kept 14.3%, decimated 85.7%).
+|00:43| LogPSpline | INFO | Spline model: MultivariateLogPSplines(channels=3, knots=mixed[2-50], degree=2, penaltyOrder=2, N=679, basis_shapes=[(679, 51), (679, 51), (679, 51), (679, 3), (679, 3), (679, 3), (679, 3), (679, 3), (679, 3)])
+Running chain 0: 100%|███████████████████| 3500/3500 [00:01<00:00, 2746.39it/s]
+Running chain 2: 100%|███████████████████| 3500/3500 [00:01<00:00, 1979.37it/s]
+Running chain 1: 100%|███████████████████| 3500/3500 [00:01<00:00, 1943.86it/s]
+Running chain 3: 100%|███████████████████| 3500/3500 [00:01<00:00, 1878.15it/s]
+Running chain 3: 100%|███████████████████| 3500/3500 [00:02<00:00, 1169.53it/s]
+Running chain 2: 100%|███████████████████| 3500/3500 [00:03<00:00, 1153.81it/s]
+Running chain 1: 100%|███████████████████| 3500/3500 [00:03<00:00, 1116.50it/s]
+Running chain 0: 100%|███████████████████| 3500/3500 [00:03<00:00, 1077.65it/s]
+Running chain 3: 100%|█████████████████████| 3500/3500 [01:02<00:00, 56.08it/s]
+Running chain 1: 100%|█████████████████████| 3500/3500 [01:02<00:00, 56.01it/s]
+Running chain 0: 100%|█████████████████████| 3500/3500 [01:02<00:00, 55.86it/s]
+Running chain 2: 100%|█████████████████████| 3500/3500 [01:03<00:00, 55.33it/s]
+    elpd = -3993001.04
+  Fold 3/3: train=678 bins, held=340 bins█| 3500/3500 [01:03<00:00, 212.19it/s]
+|01:55| LogPSpline | INFO | Saved preprocessing eigenvalue plot to out/kfold/noise5a/14d/eta0.5/K3/H1/fold_02/diagnostics/preprocessing_eigenvalue_ratios.png
+|01:55| LogPSpline | INFO | Adjusting explicit coarse VI bins: N_full=678 not divisible by Nc=256; using Nc=226.
+|01:55| LogPSpline | INFO | Coarse-grained multivariate FFT: CoarseGrainSpec(Nc=226, Nh=3, Nl=678 (kept 33.3%, decimated 66.7%).
+|02:10| LogPSpline | INFO | Spline model: MultivariateLogPSplines(channels=3, knots=mixed[2-50], degree=2, penaltyOrder=2, N=678, basis_shapes=[(678, 51), (678, 51), (678, 51), (678, 3), (678, 3), (678, 3), (678, 3), (678, 3), (678, 3)])
+Running chain 1: 100%|███████████████████| 3500/3500 [00:01<00:00, 2961.80it/s]
+Running chain 2: 100%|███████████████████| 3500/3500 [00:01<00:00, 2957.63it/s]
+Running chain 3: 100%|███████████████████| 3500/3500 [00:01<00:00, 2952.07it/s]
+Running chain 0: 100%|███████████████████| 3500/3500 [00:01<00:00, 2477.47it/s]
+Running chain 0: 100%|███████████████████| 3500/3500 [00:02<00:00, 1351.39it/s]
+Running chain 3: 100%|███████████████████| 3500/3500 [00:02<00:00, 1307.48it/s]
+Running chain 2: 100%|███████████████████| 3500/3500 [00:02<00:00, 1304.76it/s]
+Running chain 1: 100%|███████████████████| 3500/3500 [00:02<00:00, 1260.35it/s]
+Running chain 0: 100%|█████████████████████| 3500/3500 [00:54<00:00, 64.80it/s]
+Running chain 2: 100%|█████████████████████| 3500/3500 [00:54<00:00, 64.10it/s]
+Running chain 1: 100%|█████████████████████| 3500/3500 [00:54<00:00, 64.03it/s]
+Running chain 3: 100%|█████████████████████| 3500/3500 [00:55<00:00, 63.55it/s]
+    elpd = -1439981.81███████████████████ | 3325/3500 [00:54<00:00, 232.99it/s]
+
+============================================================<00:00, 239.52it/s]
+K-fold ELPD: model=H3  dataset=noise5a  dur=14.0d  K=3  eta=0.5
+============================================================
+Loaded 15778801 samples from data/noise5a.h5 (fs=0.500000 Hz); using 15777801 after edge trim. reference='segwo'.
+|03:13| LogPSpline | INFO | Wishart averaging (blocks=2): n=604800 -> Lb=302400, N=60420, p=3
+|03:13| LogPSpline | INFO | Standardized data: scale ~5.18e-11
+|03:13| LogPSpline | INFO | Inferred sampler type: multivar_blocked_nuts
+|03:13| LogPSpline | INFO | Nl trimmed to 60416 (dropped 4 trailing bins) to make Nc=1024 an exact divisor.
+|03:13| LogPSpline | INFO | Coarse-grained multivariate FFT: CoarseGrainSpec(Nc=1024, Nh=59, Nl=60416 (kept 1.7%, decimated 98.3%).
+|03:13| LogPSpline | INFO | Null-band excision: removing 6 bins across 3 band(s). 1018 bins retained.
+
+[H3] n_freq=1018, Nb=2, eta=0.5, K=3
+  Fold 1/3: train=679 bins, held=339 bins
+|03:14| LogPSpline | INFO | Saved preprocessing eigenvalue plot to out/kfold/noise5a/14d/eta0.5/K3/H3/fold_00/diagnostics/preprocessing_eigenvalue_ratios.png
+|03:14| LogPSpline | INFO | Adjusting explicit coarse VI bins: N_full=679 not divisible by Nc=256; using Nc=97.
+|03:14| LogPSpline | INFO | Coarse-grained multivariate FFT: CoarseGrainSpec(Nc=97, Nh=7, Nl=679 (kept 14.3%, decimated 85.7%).
+|03:34| LogPSpline | INFO | Spline model: MultivariateLogPSplines(channels=3, knots=50, degree=2, penaltyOrder=2, N=679, basis_shapes=[(679, 51), (679, 51), (679, 51), (679, 51), (679, 51), (679, 51), (679, 51), (679, 51), (679, 51)])
+Running chain 0: 100%|███████████████████| 3500/3500 [00:01<00:00, 3184.26it/s]
+Running chain 3: 100%|███████████████████| 3500/3500 [00:01<00:00, 3089.96it/s]
+Running chain 1: 100%|███████████████████| 3500/3500 [00:01<00:00, 2972.84it/s]
+Running chain 2: 100%|███████████████████| 3500/3500 [00:01<00:00, 2492.51it/s]
+Running chain 1: 100%|████████████████████| 3500/3500 [00:22<00:00, 158.10it/s]
+Running chain 3: 100%|████████████████████| 3500/3500 [00:22<00:00, 153.40it/s]
+Running chain 0: 100%|████████████████████| 3500/3500 [00:22<00:00, 153.15it/s]
+Running chain 2: 100%|████████████████████| 3500/3500 [00:23<00:00, 147.83it/s]
+Running chain 3: 100%|█████████████████████| 3500/3500 [01:00<00:00, 57.62it/s]
+Running chain 2: 100%|█████████████████████| 3500/3500 [01:00<00:00, 57.47it/s]
+Running chain 0: 100%|█████████████████████| 3500/3500 [01:01<00:00, 57.15it/s]
+Running chain 1: 100%|█████████████████████| 3500/3500 [01:02<00:00, 55.68it/s]
+    elpd = -20080.76%|████████████████████| 3500/3500 [01:02<00:00, 272.70it/s]
+  Fold 2/3: train=679 bins, held=339 bins
+|05:06| LogPSpline | INFO | Saved preprocessing eigenvalue plot to out/kfold/noise5a/14d/eta0.5/K3/H3/fold_01/diagnostics/preprocessing_eigenvalue_ratios.png
+|05:06| LogPSpline | INFO | Adjusting explicit coarse VI bins: N_full=679 not divisible by Nc=256; using Nc=97.
+|05:06| LogPSpline | INFO | Coarse-grained multivariate FFT: CoarseGrainSpec(Nc=97, Nh=7, Nl=679 (kept 14.3%, decimated 85.7%).
+|05:26| LogPSpline | INFO | Spline model: MultivariateLogPSplines(channels=3, knots=50, degree=2, penaltyOrder=2, N=679, basis_shapes=[(679, 51), (679, 51), (679, 51), (679, 51), (679, 51), (679, 51), (679, 51), (679, 51), (679, 51)])
+Running chain 1: 100%|███████████████████| 3500/3500 [00:01<00:00, 2986.98it/s]
+Running chain 0: 100%|███████████████████| 3500/3500 [00:01<00:00, 2960.22it/s]
+Running chain 2: 100%|███████████████████| 3500/3500 [00:01<00:00, 2954.65it/s]
+Running chain 3: 100%|███████████████████| 3500/3500 [00:01<00:00, 2637.11it/s]
+Running chain 2: 100%|████████████████████| 3500/3500 [00:23<00:00, 150.71it/s]
+Running chain 3: 100%|████████████████████| 3500/3500 [00:23<00:00, 149.96it/s]
+Running chain 1: 100%|████████████████████| 3500/3500 [00:23<00:00, 147.27it/s]
+Running chain 0: 100%|████████████████████| 3500/3500 [00:24<00:00, 140.52it/s]
+Running chain 0: 100%|█████████████████████| 3500/3500 [01:29<00:00, 39.19it/s]
+Running chain 3: 100%|█████████████████████| 3500/3500 [01:29<00:00, 38.93it/s]
+Running chain 1: 100%|█████████████████████| 3500/3500 [01:31<00:00, 38.31it/s]
+Running chain 2: 100%|█████████████████████| 3500/3500 [01:51<00:00, 31.44it/s]
+    elpd = -7806081.57███████▎             | 1225/3500 [01:30<01:22, 27.47it/s]
+  Fold 3/3: train=678 bins, held=340 bins█| 3500/3500 [01:51<00:00, 124.52it/s]
+|07:47| LogPSpline | INFO | Saved preprocessing eigenvalue plot to out/kfold/noise5a/14d/eta0.5/K3/H3/fold_02/diagnostics/preprocessing_eigenvalue_ratios.png
+|07:47| LogPSpline | INFO | Adjusting explicit coarse VI bins: N_full=678 not divisible by Nc=256; using Nc=226.
+|07:47| LogPSpline | INFO | Coarse-grained multivariate FFT: CoarseGrainSpec(Nc=226, Nh=3, Nl=678 (kept 33.3%, decimated 66.7%).
+|08:05| LogPSpline | INFO | Spline model: MultivariateLogPSplines(channels=3, knots=50, degree=2, penaltyOrder=2, N=678, basis_shapes=[(678, 51), (678, 51), (678, 51), (678, 51), (678, 51), (678, 51), (678, 51), (678, 51), (678, 51)])
+Running chain 3: 100%|███████████████████| 3500/3500 [00:01<00:00, 3278.34it/s]
+Running chain 1: 100%|███████████████████| 3500/3500 [00:01<00:00, 3118.71it/s]
+Running chain 0: 100%|███████████████████| 3500/3500 [00:01<00:00, 3088.49it/s]
+Running chain 2: 100%|███████████████████| 3500/3500 [00:01<00:00, 3027.71it/s]
+Running chain 0: 100%|████████████████████| 3500/3500 [00:19<00:00, 181.34it/s]
+Running chain 1: 100%|████████████████████| 3500/3500 [00:19<00:00, 177.70it/s]
+Running chain 2: 100%|████████████████████| 3500/3500 [00:20<00:00, 174.73it/s]
+Running chain 3: 100%|████████████████████| 3500/3500 [00:20<00:00, 168.68it/s]
+Running chain 1: 100%|█████████████████████| 3500/3500 [01:27<00:00, 40.20it/s]
+Running chain 0: 100%|█████████████████████| 3500/3500 [01:28<00:00, 39.44it/s]
+Running chain 2: 100%|█████████████████████| 3500/3500 [01:34<00:00, 37.05it/s]
+Running chain 3: 100%|█████████████████████| 3500/3500 [01:34<00:00, 36.86it/s]
+    elpd = -1425359.20████████████████████| 3500/3500 [01:34<00:00, 142.77it/s]
+Running chain 3:  95%|███████████████████ | 3325/3500 [01:33<00:01, 144.51it/s]
+============================================================<00:00, 149.36it/s]
+SUMMARY  dataset=noise5a  dur=14.0d  K=3  eta=0.5
+============================================================
+  H1: elpd = -5455665.65 ± 3484972.78
+  H3: elpd = -9251521.53 ± 7187149.43
+
+  Δelpd (H3 - H1) = -3795855.88 ± 3821707.03  (paired)
+  → Not significant  (|Δ|/SE = 1.0)
+
+Results saved to /Users/avi/Documents/projects/lisa_logpspline/out/kfold/noise5a/14d/eta0.5/K3
+  
+  
+  """
 
 from __future__ import annotations
 
