@@ -11,6 +11,8 @@ Usage:
 
 from __future__ import annotations
 
+import importlib
+import sys
 from pathlib import Path
 
 import h5py
@@ -21,11 +23,28 @@ import numpy as np
 from numpy.typing import NDArray
 from scipy.signal import csd, welch
 
-import segwo
 from lisaconstants import c
 from lisaconstants.indexing import LINKS, MOSAS
 from pytdi import LISATDICombination
 from pytdi.michelson import X2_ETA, Y2_ETA, Z2_ETA
+
+
+SCRIPT_DIR = Path(__file__).resolve().parent
+sys.path = [path for path in sys.path if Path(path or ".").resolve() != SCRIPT_DIR]
+
+try:
+    segwo = importlib.import_module("segwo")
+except ModuleNotFoundError as exc:
+    raise ModuleNotFoundError(
+        "Could not import the external 'segwo' package. Activate the project "
+        "virtualenv or install it with `pip install -e noise_5a/sgwb-renate-noise-models/`."
+    ) from exc
+
+if not hasattr(segwo, "cov"):
+    raise ImportError(
+        f"Imported 'segwo' from {getattr(segwo, '__file__', '<unknown>')}, "
+        "but it does not expose 'cov'. Check that the external SEGWO package is installed."
+    )
 
 
 DATA = Path("data")

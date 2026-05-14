@@ -3,14 +3,15 @@
 
 Usage
 -----
-  python main.py --dataset noise4a --model H4 --duration-days 30
-  python main.py --dataset noise5a --model H0 --duration-days 180 --eta 0.03
-  python main.py --dataset noise4a --model H1 --compute-lnz
+  python main.py --dataset noise4a --model full_xyz --duration-days 30
+  python main.py --dataset noise5a --model baseline_aet --duration-days 180 --eta 0.5
 """
 
 from __future__ import annotations
 
 import argparse
+import json
+import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -33,7 +34,7 @@ from src.load_data import (
     LISAData,
     interpolate_spectral_matrix,
 )
-from src.aet import run_univar_aet_analysis, xyz_to_aet_timeseries, xyz_to_aet_matrix
+from src.aet import xyz_to_aet_timeseries, xyz_to_aet_matrix
 from log_psplines.datatypes import MultivariateTimeseries
 from log_psplines.arviz_utils import save_inference_data
 from log_psplines.arviz_utils.from_arviz import get_multivar_posterior_psd_quantiles
@@ -77,36 +78,27 @@ DATASET_CONFIGS: dict[str, DatasetConfig] = {
 
 @dataclass
 class ModelSpec:
+    label: str
     description: str
-    runner: str        # "multivar" | "multivar_aet" | "univar"
+    runner: str        # "multivar" | "multivar_aet"
     k_theta: int | None
     outdir_name: str
 
 
 MODEL_SPECS: dict[str, ModelSpec] = {
-    "H0": ModelSpec(
-        description="univar(AET, 3×p=1, Wishart) — exactly diagonal AET",
-        runner="univar",
-        k_theta=None,
-        outdir_name="mcmc_output_H0",
-    ),
-    "H1": ModelSpec(
-        description="multivar(AET, p=3, k_theta=2) — effectively diagonal AET",
+    "baseline_aet": ModelSpec(
+        label="baseline_aet",
+        description="AET baseline with strongly restricted cross-spectra",
         runner="multivar_aet",
         k_theta=2,
-        outdir_name="mcmc_output_H1",
+        outdir_name="mcmc_output_baseline_aet",
     ),
-    "H2": ModelSpec(
-        description="multivar(AET, p=3, k_theta=50) — full AET covariance",
-        runner="multivar_aet",
-        k_theta=50,
-        outdir_name="mcmc_output_H2",
-    ),
-    "H4": ModelSpec(
-        description="multivar(XYZ, p=3, k_theta=50) — full XYZ covariance",
+    "full_xyz": ModelSpec(
+        label="full_xyz",
+        description="full XYZ covariance model with cross-spectra",
         runner="multivar",
         k_theta=None,
-        outdir_name="mcmc_output_H4",
+        outdir_name="mcmc_output_full_xyz",
     ),
 }
 
@@ -119,7 +111,7 @@ FMIN = 1e-4
 FMAX = 1e-1
 BLOCK_DAYS = 7.0
 NUM_CHAINS = 4
-ETA = 0.03
+ETA = 0.5
 ANALYSIS_DURATION_DAYS = 10.0
 NC_TARGET = 1024
 VI_NC_TARGET = 256
@@ -149,11 +141,6 @@ VI_STEPS = 50_000
 VI_LR = 1e-2
 VI_POSTERIOR_DRAWS = 256
 
-COMPUTE_LNZ = False
-LNZ_N_RESAMPLES = 512
-LNZ_N_ESTIMATIONS = 3
-
-
 # ---------------------------------------------------------------------------
 # Plotting helpers
 # ---------------------------------------------------------------------------
@@ -175,26 +162,33 @@ def _coherence_from_matrix(s: np.ndarray, i: int, j: int) -> np.ndarray:
     sii = np.maximum(np.asarray(s[:, i, i].real, dtype=np.float64), 0.0)
     sjj = np.maximum(np.asarray(s[:, j, j].real, dtype=np.float64), 0.0)
     denom = sii * sjj
-    return np.divide(
+    return np.clip(np.divide(
         np.abs(np.asarray(s[:, i, j], dtype=np.complex128)) ** 2,
         denom,
         out=np.zeros_like(denom, dtype=np.float64),
         where=denom > 0.0,
-    )
+    ), 0.0, 1.0)
 
 
-def _posterior_coherence_from_sd_quantiles(sd_quantiles: np.ndarray) -> np.ndarray:
-    if sd_quantiles.ndim != 4 or sd_quantiles.shape[0] != 3:
-        raise ValueError(
-            f"sd_quantiles must have shape (3, n_freq, 3, 3); got {sd_quantiles.shape}."
-        )
-    coherence = np.zeros(sd_quantiles.shape, dtype=np.float64)
-    for q in range(3):
-        sq = np.asarray(sd_quantiles[q], dtype=np.complex128)
-        for i in range(3):
-            for j in range(3):
-                coherence[q, :, i, j] = _coherence_from_matrix(sq, i, j)
-    return np.sort(np.clip(coherence, 0.0, 1.0), axis=0)
+def _coherence_from_components(
+    sii: np.ndarray, sjj: np.ndarray, sij: np.ndarray
+) -> np.ndarray:
+    sii = np.maximum(np.asarray(sii, dtype=np.float64), 0.0)
+    sjj = np.maximum(np.asarray(sjj, dtype=np.float64), 0.0)
+    denom = sii * sjj
+    return np.clip(np.divide(
+        np.abs(np.asarray(sij, dtype=np.complex128)) ** 2,
+        denom,
+        out=np.zeros_like(denom, dtype=np.float64),
+        where=denom > 0.0,
+    ), 0.0, 1.0)
+
+
+def _posterior_coherence_quantiles(raw_quantiles: dict[str, Any]) -> np.ndarray | None:
+    coherence = raw_quantiles.get("coherence")
+    if coherence is None:
+        return None
+    return np.asarray(coherence, dtype=np.float64)
 
 
 def _interp_complex_series(
@@ -245,18 +239,15 @@ def plot_psd_triangle(
         (2, 0): _coherence_from_matrix(s_ref, 2, 0),
     }
     coh_emp = {
-        (1, 0): np.clip(
-            np.abs(s_emp["Sxy"]) / np.sqrt(
-                np.maximum(s_emp["Sxx"].real, 0.0) * np.maximum(s_emp["Syy"].real, 0.0)
-            ), 0.0, 1.0),
-        (2, 1): np.clip(
-            np.abs(s_emp["Syz"]) / np.sqrt(
-                np.maximum(s_emp["Syy"].real, 0.0) * np.maximum(s_emp["Szz"].real, 0.0)
-            ), 0.0, 1.0),
-        (2, 0): np.clip(
-            np.abs(s_emp["Szx"]) / np.sqrt(
-                np.maximum(s_emp["Szz"].real, 0.0) * np.maximum(s_emp["Sxx"].real, 0.0)
-            ), 0.0, 1.0),
+        (1, 0): _coherence_from_components(
+            s_emp["Syy"].real, s_emp["Sxx"].real, s_emp["Sxy"],
+        ),
+        (2, 1): _coherence_from_components(
+            s_emp["Szz"].real, s_emp["Syy"].real, s_emp["Syz"],
+        ),
+        (2, 0): _coherence_from_components(
+            s_emp["Szz"].real, s_emp["Sxx"].real, s_emp["Szx"],
+        ),
     }
     post_real = (
         None if posterior_quantiles is None
@@ -432,7 +423,7 @@ def make_block_welch_plots(
             "freq": _raw_q["freq"],
             "real": np.asarray(_sd.real, dtype=np.float64),
             "imag": np.asarray(_sd.imag, dtype=np.float64),
-            "coherence": _posterior_coherence_from_sd_quantiles(_sd),
+            "coherence": _posterior_coherence_quantiles(_raw_q),
         }
     else:
         posterior_quantiles = None
@@ -462,12 +453,6 @@ def build_multivar_config(
     vi_nc: int,
     eta: float,
     outdir: Path,
-    compute_lnz: bool,
-    lnz_n_resamples: int,
-    lnz_n_estimations: int,
-    lnz_max_iter: int,
-    lnz_tol: float,
-    lnz_kde_bw: str,
     theta_re_knots: int | None = None,
     theta_im_knots: int | None = None,
 ) -> PipelineConfig:
@@ -514,18 +499,7 @@ def build_multivar_config(
         dense_mass=DENSE_MASS,
         design_from_vi=False,
         design_from_vi_tau=3.0,
-        compute_lnz=compute_lnz,
-        extra_kwargs={
-            "lnz_kwargs": {
-                "morph_type": "indep",
-                "thin": 1,
-                "n_resamples": lnz_n_resamples,
-                "n_estimations": lnz_n_estimations,
-                "kde_bw": lnz_kde_bw,
-                "max_iter": lnz_max_iter,
-                "tol": lnz_tol,
-            }
-        } if compute_lnz else {},
+        compute_lnz=False,
     )
 
 
@@ -558,11 +532,57 @@ def _prepare_run(
     return eta, duration_days, duration_label, nb, n_trim, main_nc, vi_nc
 
 
+def _write_run_metadata(
+    outdir: Path,
+    *,
+    model: str,
+    dataset: str,
+    duration_days: float,
+    duration_label: str,
+    eta: float,
+    nb: int,
+    n_trim: int,
+    main_nc: int,
+    vi_nc: int,
+    result: Any,
+    pipeline_runtime_s: float,
+) -> None:
+    vi_coarse_runtime_s = (
+        float(result.vi_coarse.runtime)
+        if getattr(result, "vi_coarse", None) is not None
+        else 0.0
+    )
+    vi_runtime_s = (
+        float(result.vi.runtime)
+        if getattr(result, "vi", None) is not None
+        else 0.0
+    )
+    vi_total_runtime_s = vi_coarse_runtime_s + vi_runtime_s
+    mcmc_runtime_s = max(float(pipeline_runtime_s) - vi_total_runtime_s, 0.0)
+    metadata = {
+        "dataset": dataset,
+        "model": model,
+        "duration_days": float(duration_days),
+        "duration": duration_label,
+        "eta": float(eta),
+        "nb": int(nb),
+        "n_trim": int(n_trim),
+        "main_nc": int(main_nc),
+        "vi_nc": int(vi_nc),
+        "vi_coarse_runtime_s": vi_coarse_runtime_s,
+        "vi_runtime_s": vi_runtime_s,
+        "vi_total_runtime_s": vi_total_runtime_s,
+        "mcmc_runtime_s": mcmc_runtime_s,
+        "pipeline_runtime_s": float(pipeline_runtime_s),
+    }
+    (outdir / "run_metadata.json").write_text(json.dumps(metadata, indent=2) + "\n")
+
+
 def run_multivar(
-    args: argparse.Namespace, cfg: DatasetConfig, lisa: LISAData, *, outdir_name: str,
+    args: argparse.Namespace, cfg: DatasetConfig, lisa: LISAData, *, spec: ModelSpec,
 ) -> None:
     eta, duration_days, duration_label, nb, n_trim, main_nc, vi_nc = _prepare_run(args, cfg, lisa)
-    outdir = args.outdir or (cfg.outdir_base / outdir_name / duration_label / f"eta{eta:g}")
+    outdir = args.outdir or (cfg.outdir_base / spec.outdir_name / duration_label / f"eta{eta:g}")
     outdir.mkdir(parents=True, exist_ok=True)
     numpyro.set_host_device_count(NUM_CHAINS)
 
@@ -573,17 +593,29 @@ def run_multivar(
     config = build_multivar_config(
         cfg=cfg, true_psd_freq=lisa.freq, true_psd_matrix=lisa.true_matrix,
         nb=nb, main_nc=main_nc, vi_nc=vi_nc, eta=eta, outdir=outdir,
-        compute_lnz=bool(args.compute_lnz),
-        lnz_n_resamples=int(args.lnz_n_resamples), lnz_n_estimations=int(args.lnz_n_estimations),
-        lnz_max_iter=int(args.lnz_max_iter), lnz_tol=float(args.lnz_tol), lnz_kde_bw=str(args.lnz_kde_bw),
     )
     pipeline = make_pipeline(ts, config)
+    t0 = time.perf_counter()
     result = pipeline.run()
+    pipeline_runtime_s = time.perf_counter() - t0
     result.save(str(outdir), true_psd=align_true_psd_to_freq(config.true_psd, pipeline.data))
     idata = result.idata
-
-    if bool(args.compute_lnz):
-        print("lnZ:", {k: idata.attrs.get(k) for k in ("lnz", "lnz_err", "lnz_valid")})
+    idata.attrs["model"] = spec.label
+    idata.attrs["model_description"] = spec.description
+    _write_run_metadata(
+        outdir,
+        model=spec.label,
+        dataset=args.dataset,
+        duration_days=duration_days,
+        duration_label=duration_label,
+        eta=eta,
+        nb=nb,
+        n_trim=n_trim,
+        main_nc=main_nc,
+        vi_nc=vi_nc,
+        result=result,
+        pipeline_runtime_s=pipeline_runtime_s,
+    )
 
     make_block_welch_plots(lisa, n_trim, nb, outdir, idata=idata)
     out_nc = outdir / "idata.nc"
@@ -593,14 +625,14 @@ def run_multivar(
 
 def run_multivar_aet(
     args: argparse.Namespace, cfg: DatasetConfig, lisa: LISAData,
-    *, outdir_name: str, k_theta: int,
+    *, spec: ModelSpec,
 ) -> None:
     eta, duration_days, duration_label, nb, n_trim, main_nc, vi_nc = _prepare_run(args, cfg, lisa)
-    outdir = args.outdir or (cfg.outdir_base / outdir_name / duration_label / f"eta{eta:g}")
+    outdir = args.outdir or (cfg.outdir_base / spec.outdir_name / duration_label / f"eta{eta:g}")
     outdir.mkdir(parents=True, exist_ok=True)
     numpyro.set_host_device_count(NUM_CHAINS)
 
-    print(f"multivar(AET): duration={duration_days:g}d, Nb={nb}, eta={eta:.6g}, theta knots={k_theta}")
+    print(f"multivar(AET): duration={duration_days:g}d, Nb={nb}, eta={eta:.6g}, theta knots={spec.k_theta}")
 
     y_aet = xyz_to_aet_timeseries(lisa.data[:n_trim].astype(np.float64))
     ts = MultivariateTimeseries(y=y_aet, t=lisa.time[:n_trim].astype(np.float64))
@@ -609,57 +641,34 @@ def run_multivar_aet(
     config = build_multivar_config(
         cfg=cfg, true_psd_freq=lisa.freq, true_psd_matrix=true_psd_matrix_aet,
         nb=nb, main_nc=main_nc, vi_nc=vi_nc, eta=eta, outdir=outdir,
-        compute_lnz=bool(args.compute_lnz),
-        lnz_n_resamples=int(args.lnz_n_resamples), lnz_n_estimations=int(args.lnz_n_estimations),
-        lnz_max_iter=int(args.lnz_max_iter), lnz_tol=float(args.lnz_tol), lnz_kde_bw=str(args.lnz_kde_bw),
-        theta_re_knots=k_theta, theta_im_knots=k_theta,
+        theta_re_knots=spec.k_theta, theta_im_knots=spec.k_theta,
     )
     pipeline = make_pipeline(ts, config)
+    t0 = time.perf_counter()
     result = pipeline.run()
+    pipeline_runtime_s = time.perf_counter() - t0
     result.save(str(outdir), true_psd=align_true_psd_to_freq(config.true_psd, pipeline.data))
     idata = result.idata
-
-    if bool(args.compute_lnz):
-        print("lnZ:", {k: idata.attrs.get(k) for k in ("lnz", "lnz_err", "lnz_valid")})
+    idata.attrs["model"] = spec.label
+    idata.attrs["model_description"] = spec.description
+    _write_run_metadata(
+        outdir,
+        model=spec.label,
+        dataset=args.dataset,
+        duration_days=duration_days,
+        duration_label=duration_label,
+        eta=eta,
+        nb=nb,
+        n_trim=n_trim,
+        main_nc=main_nc,
+        vi_nc=vi_nc,
+        result=result,
+        pipeline_runtime_s=pipeline_runtime_s,
+    )
 
     out_nc = outdir / "idata.nc"
     save_inference_data(idata, out_nc)
     print(f"Saved inference data to {out_nc.resolve()}")
-
-
-def run_univar(
-    args: argparse.Namespace, cfg: DatasetConfig, lisa: LISAData, *, outdir_name: str,
-) -> None:
-    eta, duration_days, duration_label, nb, n_trim, main_nc, vi_nc = _prepare_run(args, cfg, lisa)
-    root_outdir = args.outdir or (cfg.outdir_base / outdir_name / duration_label / f"eta{eta:g}")
-    numpyro.set_host_device_count(NUM_CHAINS)
-
-    exclude_bands = light_travel_null_exclusion_bands(
-        FMIN, FMAX, light_travel_time=LIGHT_TRAVEL_TIME, halfwidth=NULL_EXCISION_HALFWIDTH,
-    )
-    print(f"univar(AET): duration={duration_days:g}d, Nb={nb}, eta={eta:.6g}")
-
-    run_univar_aet_analysis(
-        lisa=lisa, n_trim=n_trim, root_outdir=root_outdir,
-        fmin=FMIN, fmax=FMAX, nb=nb, main_nc=main_nc, vi_nc=vi_nc,
-        n_samples=N_SAMPLES, n_warmup=N_WARMUP, num_chains=NUM_CHAINS,
-        chain_method="parallel",
-        alpha_delta=ALPHA_DELTA, beta_delta=BETA_DELTA, eta=eta,
-        n_knots=N_SPLINE_KNOTS_DELTA, degree=2, diff_order=DIFF_ORDER,
-        knot_method=KNOT_METHOD, use_vi=USE_VI,
-        vi_steps=max(VI_STEPS, nb * 1500), vi_lr=VI_LR,
-        vi_guide=f"lowrank:{max(20, nb * 2)}", vi_posterior_draws=VI_POSTERIOR_DRAWS,
-        vi_progress_bar=True, target_accept_prob=TARGET_ACCEPT_PROB,
-        max_tree_depth=MAX_TREE_DEPTH, dense_mass=DENSE_MASS,
-        exclude_freq_bands=exclude_bands, compute_lnz=bool(args.compute_lnz),
-        lnz_kwargs={
-            "n_resamples": int(args.lnz_n_resamples),
-            "n_estimations": int(args.lnz_n_estimations),
-            "kde_bw": str(args.lnz_kde_bw),
-            "max_iter": int(args.lnz_max_iter),
-            "tol": float(args.lnz_tol),
-        },
-    )
 
 
 # ---------------------------------------------------------------------------
@@ -674,12 +683,6 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--duration-days", type=float, default=None)
     parser.add_argument("--eta", type=float, default=None)
     parser.add_argument("--outdir", type=Path, default=None)
-    parser.add_argument("--compute-lnz", action="store_true", default=COMPUTE_LNZ)
-    parser.add_argument("--lnz-n-resamples", type=int, default=LNZ_N_RESAMPLES)
-    parser.add_argument("--lnz-n-estimations", type=int, default=LNZ_N_ESTIMATIONS)
-    parser.add_argument("--lnz-max-iter", type=int, default=5000)
-    parser.add_argument("--lnz-tol", type=float, default=1e-2)
-    parser.add_argument("--lnz-kde-bw", type=str, default="silverman")
     return parser.parse_args()
 
 
@@ -690,16 +693,16 @@ def main() -> None:
         args.duration_days = ANALYSIS_DURATION_DAYS
 
     spec = MODEL_SPECS[args.model]
-    print(f"Dataset: {args.dataset}  Model {args.model}: {spec.description}")
+    print(f"Dataset: {args.dataset}  Model {spec.label}: {spec.description}")
 
     lisa = LISAData.load(cfg.data_path, reference=cfg.reference)
 
     if spec.runner == "multivar":
-        run_multivar(args, cfg, lisa, outdir_name=spec.outdir_name)
+        run_multivar(args, cfg, lisa, spec=spec)
     elif spec.runner == "multivar_aet":
-        run_multivar_aet(args, cfg, lisa, outdir_name=spec.outdir_name, k_theta=spec.k_theta)
+        run_multivar_aet(args, cfg, lisa, spec=spec)
     else:
-        run_univar(args, cfg, lisa, outdir_name=spec.outdir_name)
+        raise ValueError(f"Unknown runner {spec.runner!r}.")
 
 
 if __name__ == "__main__":

@@ -55,17 +55,18 @@ VI steps reduce the recovery burden.
 From `/Users/avi/Documents/projects/lisa_logpspline`:
 
 ```bash
-# 1m and 3m for both datasets (sequential, ~2–5 h total on a laptop)
-.venv/bin/python run_duration_sweeps.py --datasets noise_4a noise_5a --durations 1m 3m
+# Full lnZ matrix: noise4a/noise5a × H0/H1/H2/H3 × 30/180/365 days.
+.venv/bin/python run_settings.py --python .venv/bin/python
+
+# Check the exact 24 commands without launching MCMC.
+.venv/bin/python run_settings.py --python .venv/bin/python --dry-run
 ```
 
 Individual runs:
 
 ```bash
-.venv/bin/python run_mcmc.py --dataset noise_4a --model multivar --duration-days 30   # 1m
-.venv/bin/python run_mcmc.py --dataset noise_4a --model multivar --duration-days 90   # 3m
-.venv/bin/python run_mcmc.py --dataset noise_5a --model multivar --duration-days 30
-.venv/bin/python run_mcmc.py --dataset noise_5a --model multivar --duration-days 90
+.venv/bin/python main.py --dataset noise4a --model H3 --duration-days 30 --compute-lnz
+.venv/bin/python main.py --dataset noise5a --model H0 --duration-days 180 --compute-lnz
 ```
 
 Rough runtime per run on CPU (no GPU):
