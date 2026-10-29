@@ -1,0 +1,75 @@
+{
+  "nuts": [
+    {
+      "factor": "0",
+      "divergences": 0,
+      "rhat_max": 1.0022684643448687,
+      "ess_bulk_min": 4723.310464183243,
+      "ess_tail_min": 2691.1707891686897,
+      "max_treedepth_hits": 0,
+      "step_size": 0.328857155372026,
+      "n_draws": 4000,
+      "bfmi_per_chain": [
+        1.0306586001049882,
+        1.008857727516472,
+        1.0775935989019572,
+        0.9848601939537793
+      ],
+      "diagnostic_pass": true
+    },
+    {
+      "factor": "1",
+      "divergences": 0,
+      "rhat_max": 1.0031669170500568,
+      "ess_bulk_min": 3581.4629824175845,
+      "ess_tail_min": 2660.8376327099545,
+      "max_treedepth_hits": 0,
+      "step_size": 0.34923523114428234,
+      "n_draws": 4000,
+      "bfmi_per_chain": [
+        1.0390639612116437,
+        0.9965623765977796,
+        0.9124579435571171,
+        1.0391407793968734
+      ],
+      "diagnostic_pass": true
+    },
+    {
+      "factor": "2",
+      "divergences": 0,
+      "rhat_max": 1.0025241199105317,
+      "ess_bulk_min": 3521.504753679106,
+      "ess_tail_min": 2960.4018966629674,
+      "max_treedepth_hits": 0,
+      "step_size": 0.33819007451545874,
+      "n_draws": 4000,
+      "bfmi_per_chain": [
+        1.0544774377047754,
+        1.0834920305472684,
+        1.1028084311332143,
+        1.0056870299827203
+      ],
+      "diagnostic_pass": true
+    }
+  ],
+  "all_parameter_diagnostics_finite": true,
+  "all_factors_pass": true,
+  "diagnostic_thresholds": {
+    "minimum_chains": 2,
+    "rhat_max_exclusive": 1.01,
+    "minimum_bulk_and_tail_ess": 400,
+    "minimum_bfmi": 0.3,
+    "maximum_divergences": 0,
+    "maximum_depth_hits": 0
+  },
+  "case": "asymmetric",
+  "basis": "aet",
+  "n_frequency": 251,
+  "Nb": 8,
+  "Nh": 42,
+  "fit_seconds": null,
+  "diagnostics_recomputed_from_saved_posterior": true,
+  "diagnostics_source_sha256": "f410d08e61e586bc84ff4aef0035cdcdd693a00b26e1bd6cfc916cf163f4ca34",
+  "claim_scope": "One stationary synthetic realization; descriptive recovery, not coverage calibration or time-varying validation",
+  "finite_physical_draws": true
+}

@@ -1,0 +1,6 @@
+# Pin the merged global-centering + Gaussian-marginalization implementation.
+LogPSplinePSD @ git+https://github.com/nz-gravity/LogPSplinePSD.git@efd0c7d8abe6fbb090ed8eb1a83da3481b623a8f
+pytdi==2.2.1
+lisaorbits==3.0.3
+lisaconstants==2.0.2
+h5py==3.16.0

@@ -1,0 +1,111 @@
+{
+  "case": "asymmetric",
+  "basis": "aet",
+  "reference": {
+    "full_record_samples": 432000,
+    "block_samples": 54000,
+    "Nb": 8,
+    "window": [
+      "tukey",
+      0.1
+    ],
+    "mean_removal": "global_per_channel",
+    "direct_diagonal_refinement_bins": [
+      42,
+      46,
+      343
+    ],
+    "expectation": "finite-periodic Gaussian ensemble, exact block/taper mean",
+    "independent_Wishart_distribution_established": false
+  },
+  "analysis_source_sha256": "50d8e7d56247862b737041d723d2e290670b52a266f4da42d43cfcb0b45d9d39",
+  "reference_source_sha256": "5284ccbe47e0ac3b35de0b2abc2e9fb78d1b31bf66e1b0d7e80eeded047c19f6",
+  "validation": {
+    "direct_response_cases": 9,
+    "maximum_relative_error": 8.685202323647613e-16,
+    "all_draw_restoration_max_relative_error": 0.0,
+    "all_draw_quantile_max_relative_error": 2.2875330905826866e-16,
+    "minimum_correlation_matrix_eigenvalue_across_draws": 0.5992977500774236,
+    "coherence_unchanged": true
+  },
+  "n_frequency": 251,
+  "mean_normalized_absolute_matrix_error": [
+    [
+      0.010321564604335719,
+      0.0156965520389462,
+      0.013447610641830133
+    ],
+    [
+      0.0156965520389462,
+      0.010370065382161819,
+      0.01544513040705964
+    ],
+    [
+      0.013447610641830133,
+      0.015445130407059639,
+      0.009904372507762086
+    ]
+  ],
+  "median_normalized_absolute_matrix_error": [
+    [
+      0.009030560374378277,
+      0.014693424577528182,
+      0.010278535737299392
+    ],
+    [
+      0.014693424577528182,
+      0.008177179104019005,
+      0.013036342513613648
+    ],
+    [
+      0.010278535737299392,
+      0.013036342513613648,
+      0.007856123608634679
+    ]
+  ],
+  "diagonal_median_fit_to_expected_ratio": [
+    0.9990110909640316,
+    1.0053861571686498,
+    0.9948453755949808
+  ],
+  "diagonal_first_bin_fit_to_expected_ratio": [
+    0.9292632444070833,
+    0.9477462283810402,
+    0.920827548777173
+  ],
+  "real_component_90pct_containment_fraction": [
+    [
+      0.8645418326693227,
+      0.848605577689243,
+      0.9123505976095617
+    ],
+    [
+      0.848605577689243,
+      0.900398406374502,
+      0.8207171314741036
+    ],
+    [
+      0.9123505976095617,
+      0.8207171314741036,
+      0.9681274900398407
+    ]
+  ],
+  "imag_component_90pct_containment_fraction": [
+    [
+      1.0,
+      0.7609561752988048,
+      0.9442231075697212
+    ],
+    [
+      0.7609561752988048,
+      1.0,
+      0.848605577689243
+    ],
+    [
+      0.9442231075697212,
+      0.848605577689243,
+      1.0
+    ]
+  ],
+  "interpretation": "Descriptive across correlated bins of one realization; not repeated-noise coverage calibration"
+}
