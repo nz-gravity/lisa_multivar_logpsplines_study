@@ -132,11 +132,43 @@ positive-definite matrix; positive definiteness is checked on complete posterior
 
 ## Next: time-varying tests
 
+The stationary-data control for the updated PR is separate from the baseline
+above. Its preprocessing comparison passed, but the full fit was cancelled at
+the user's direction before it returned a posterior. The
+[cancelled control record](validation/grid_stationary/README.md) retains the exact
+preparation checks, configuration, provenance and run log. Controlled simulation
+studies take priority before another long LISA fit.
+
+Install the inference revision used for that attempt after installing dependencies
+to reproduce its preprocessing comparison:
+
+```bash
+python -m pip install "LogPSplinePSD @ git+https://github.com/nz-gravity/LogPSplinePSD.git@d0b3aab6a615ef5ff47468d7e92be850466203a9"
+export JAX_ENABLE_X64=true
+python stationary_fixed_geometry/check_grid_stationary.py --prepare-only
+```
+
+This control uses the same ten-day unequal-MOSA AET record with 128 coarse bins
+before null masking, pools adjacent pairs of the eight time blocks, and permits
+a linear time contribution. It checks the summed time-local sufficient
+statistics, counts and ENBW against stationary preprocessing at the same
+resolution before sampling. The future full run requests four chains with 500
+warmup and 500 retained draws each, then evaluates all-draw PSD ratios and complex
+coherency changes at the first and last reference-grid times. Run it by omitting
+`--prepare-only`; run `plot_grid_stationary.py` only after a completed posterior and
+its postprocessing have been saved. Neither recovery nor sampler convergence was
+assessed for the cancelled attempt. The earlier saved stationary fit has 256 coarse bins and
+a different spline prior; these are not identical-model posterior comparisons.
+Marginalization reduces the sampled dimension but requires a dense Gaussian
+factorization at each likelihood evaluation. Increasing both time and frequency
+basis sizes can therefore be expensive; fewer sampled parameters do not by
+themselves guarantee a shorter run.
+
 [LogPSplinePSD PR #53](https://github.com/nz-gravity/LogPSplinePSD/pull/53) is an
-experimental draft based on an older library version. Its reported real-series
-tests retained divergences, and it does not yet supply multivariate time-varying
-VI. It should first incorporate the merged marginalization and centering changes,
-then pass a stationary-limit comparison using this generator before introducing
+experimental draft. It now includes Gaussian marginalization and global mean
+removal. Its earlier real-series tests retained divergences, and it does not yet
+supply multivariate time-varying VI. The matched-prior algebraic stationary-limit
+tests pass; this deferred real-data control is an additional sampler/recovery gate before introducing
 time-dependent MOSA amplitudes with the orbit still fixed. Repeated realizations,
 local-FFT controls and sampler diagnostics are needed before making recovery or
 coverage claims. This directory does not implement or validate that extension.

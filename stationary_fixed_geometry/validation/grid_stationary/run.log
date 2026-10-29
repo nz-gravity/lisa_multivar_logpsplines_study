@@ -1,0 +1,8 @@
+|00:00| LogPSpline | INFO | Nl trimmed to 10752 (dropped 38 trailing bins) to make Nc=128 an exact divisor.
+|00:00| LogPSpline | INFO | Nl=10790 and Nc=128 imply even Nh=84. 
+|00:00| LogPSpline | INFO | Coarse-grained multivariate FFT: CoarseGrainSpec(Nc=128, Nh=84, Nl=10752 (kept 1.2%, decimated 98.8%).
+{'summed_sufficient_statistics_max_error_normalized_by_autos': 3.1422500047629794e-15, 'matched_counts': 672, 'fine_frequencies_per_bin': 84, 'observed_time_bins': 4, 'reference_time_bins': 8, 'retained_frequency_bins': 124, 'enbw': 1.0387811634349031, 'mean_removal': 'global_per_channel', 'passed': True}
+Sampling stationary LISA data with the flexible ANOVA model
+|00:00| LogPSpline | INFO | GridTV reconstructed coefficients per row: [32, 96, 160]; marginal sampling retains 32 delta coefficients per row (plus smoothing scales)
+/private/tmp/logpspline-pr53-20261029/src/log_psplines/inference/nuts.py:82: UserWarning: There are not enough devices to run parallel chains: expected 4 but got 1. Chains will be drawn sequentially. If you are running MCMC in CPU, consider using `numpyro.set_host_device_count(4)` at the beginning of your program. You can double-check how many devices are available in your system using `jax.local_device_count()`.
+  mcmc = MCMC(

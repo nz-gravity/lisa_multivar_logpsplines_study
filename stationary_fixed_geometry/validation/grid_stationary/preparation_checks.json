@@ -1,0 +1,11 @@
+{
+  "summed_sufficient_statistics_max_error_normalized_by_autos": 3.1422500047629794e-15,
+  "matched_counts": 672,
+  "fine_frequencies_per_bin": 84,
+  "observed_time_bins": 4,
+  "reference_time_bins": 8,
+  "retained_frequency_bins": 124,
+  "enbw": 1.0387811634349031,
+  "mean_removal": "global_per_channel",
+  "passed": true
+}

@@ -14,6 +14,10 @@ out/
 !stationary_fixed_geometry/validation/*.json
 !stationary_fixed_geometry/validation/*.png
 !stationary_fixed_geometry/validation/*.pdf
+!stationary_fixed_geometry/validation/grid_stationary/*.json
+!stationary_fixed_geometry/validation/grid_stationary/*.png
+!stationary_fixed_geometry/validation/grid_stationary/*.pdf
+!stationary_fixed_geometry/validation/grid_stationary/*.log
 stationary_fixed_geometry/data/
 stationary_fixed_geometry/output/
 __pycache__/
