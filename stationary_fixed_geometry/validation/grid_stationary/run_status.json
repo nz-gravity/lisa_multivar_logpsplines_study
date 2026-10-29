@@ -1,0 +1,15 @@
+{
+  "status": "cancelled_to_prioritize_simulations",
+  "reason": "Validate good controlled simulation studies before long LISA fits.",
+  "statistical_status": "incomplete; sampler diagnostics were not assessed",
+  "completed_posterior": false,
+  "sampling_diagnostics_available": false,
+  "elapsed_seconds_last_observed": 3754,
+  "cpu_seconds_last_observed": 14754,
+  "signal_sequence": ["SIGINT", "SIGTERM"],
+  "exit_code": 143,
+  "preparation_checks": "preparation_checks.json",
+  "provenance": "provenance.json",
+  "log": "run.log",
+  "interpretation": "Cancellation to prioritize controlled simulations is not evidence of divergences, poor convergence, or a sampler diagnostic failure. Exact preprocessing checks passed before sampling; no posterior was retained."
+}

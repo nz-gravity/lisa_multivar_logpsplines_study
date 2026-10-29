@@ -8,3 +8,17 @@
 # Large data and output trees are not tracked
 data/
 out/
+
+# Reproducible fixed-geometry demo: track source and compact validation only.
+!stationary_fixed_geometry/requirements.txt
+!stationary_fixed_geometry/validation/*.json
+!stationary_fixed_geometry/validation/*.png
+!stationary_fixed_geometry/validation/*.pdf
+!stationary_fixed_geometry/validation/grid_stationary/*.json
+!stationary_fixed_geometry/validation/grid_stationary/*.png
+!stationary_fixed_geometry/validation/grid_stationary/*.pdf
+!stationary_fixed_geometry/validation/grid_stationary/*.log
+stationary_fixed_geometry/data/
+stationary_fixed_geometry/output/
+__pycache__/
+.venv/

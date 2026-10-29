@@ -1,0 +1,256 @@
+{
+  "generator": "Stationary physical-MOSA Fourier synthesis through exact PyTDI X2_ETA/Y2_ETA/Z2_ETA",
+  "not_end_to_end_instrument": true,
+  "days": 10,
+  "dt": 2,
+  "fs": 0.5,
+  "size": 432000,
+  "duration": 864000,
+  "seed": 20261029,
+  "chunk_size": 8192,
+  "tau": 8.3,
+  "links": [
+    12,
+    23,
+    31,
+    13,
+    32,
+    21
+  ],
+  "noise_process_order": [
+    "tm_12",
+    "tm_23",
+    "tm_31",
+    "tm_13",
+    "tm_32",
+    "tm_21",
+    "oms_12",
+    "oms_23",
+    "oms_31",
+    "oms_13",
+    "oms_32",
+    "oms_21"
+  ],
+  "tdi_units": "fractional frequency",
+  "psd_units": "1/Hz (one-sided)",
+  "tm_asd_units": "m/s^2/sqrt(Hz)",
+  "oms_asd_units": "m/sqrt(Hz)",
+  "tm_fknee_hz": 0.0004,
+  "tm_fbreak_hz": 0.008,
+  "oms_fknee_hz": 0.002,
+  "dc_and_nyquist": "zeroed; omit from analysis",
+  "finite_record": "periodic stationary Gaussian Fourier ensemble, band limited at Nyquist",
+  "same_standard_normal_fourier_draws": true,
+  "aet_synthesis": "AET @ source transfer matrix before inverse FFT",
+  "generator_sha256": "b09c0c8ec2854d92d354ded5cb333b96dbf4706f6a6b1efec5e31680732e3de9",
+  "orbit_file": "fixed_orbits.h5",
+  "orbit_checks": {
+    "fixed_positions": true,
+    "zero_velocities": true,
+    "zero_accelerations": true,
+    "all_directed_delays_fixed": true,
+    "orbit_samples": 9,
+    "light_travel_time_s": 8.3,
+    "arms_m": [
+      2488277401.4,
+      2488277401.4,
+      2488277401.4,
+      2488277401.4,
+      2488277401.4,
+      2488277401.4
+    ],
+    "sha256": "7e97bb4dc93c23fa46f52881b8b5056392384864a881608c0810ec35f86a0b3e"
+  },
+  "equal_arm_closed_form_max_relative_error": 8.422324328139668e-13,
+  "AET_rows": [
+    [
+      0.8164965809277261,
+      -0.4082482904638631,
+      -0.4082482904638631
+    ],
+    [
+      0.0,
+      -0.7071067811865476,
+      0.7071067811865476
+    ],
+    [
+      0.5773502691896258,
+      0.5773502691896258,
+      0.5773502691896258
+    ]
+  ],
+  "AET_convention": "A=(2X-Y-Z)/sqrt(6), E=(Z-Y)/sqrt(2), T=(X+Y+Z)/sqrt(3)",
+  "sources": [
+    "https://lisa-simulation.pages.in2p3.fr/instrument/noises.html",
+    "https://lisa.pages.in2p3.fr/LDC/_modules/ldc/lisa/noise/noise.html",
+    "https://lisa-simulation.pages.in2p3.fr/pytdi/"
+  ],
+  "package_versions": {
+    "numpy": "2.4.6",
+    "pytdi": "2.2.1",
+    "lisaorbits": "3.0.3",
+    "lisaconstants": "2.0.2",
+    "h5py": "3.16.0"
+  },
+  "checks": {
+    "symmetric": {
+      "tm_asds": [
+        3e-15,
+        3e-15,
+        3e-15,
+        3e-15,
+        3e-15,
+        3e-15
+      ],
+      "oms_asds": [
+        1.5e-11,
+        1.5e-11,
+        1.5e-11,
+        1.5e-11,
+        1.5e-11,
+        1.5e-11
+      ],
+      "whitened_covariance_real": [
+        [
+          1.003422548595886,
+          -0.0030641715834028005,
+          0.0010865938337713736
+        ],
+        [
+          -0.0030641715834028005,
+          1.0034460781304169,
+          -7.098315321157047e-05
+        ],
+        [
+          0.0010865938337713736,
+          -7.098315321157047e-05,
+          0.9858781518210252
+        ]
+      ],
+      "whitened_covariance_imag": [
+        [
+          -1.2153892313776474e-19,
+          -0.0006468392986715781,
+          -0.0005602240703216226
+        ],
+        [
+          0.0006468392986715809,
+          2.841703857238204e-20,
+          0.0013377782294062962
+        ],
+        [
+          0.0005602240703216206,
+          -0.0013377782294062988,
+          2.5848223017137742e-20
+        ]
+      ],
+      "whitened_covariance_max_error": 0.014121848178974772,
+      "power_to_truth_mean_by_xyz": [
+        1.0034225485958859,
+        1.0044952021738522,
+        1.0026258088774431
+      ],
+      "validation_frequency_band_hz": [
+        0.0001,
+        0.02
+      ],
+      "validation_frequency_bins": 17194,
+      "aet_pair_order": [
+        "AE",
+        "AT",
+        "ET"
+      ],
+      "median_aet_magnitude_squared_coherence": [
+        1.2682563138005907e-33,
+        3.720679188678224e-33,
+        1.2223026077824982e-33
+      ],
+      "max_aet_imaginary_normalized_csd": [
+        1.813236383380595e-14,
+        2.5328523785233957e-15,
+        1.4669471162766332e-15
+      ],
+      "whitening_check_tolerance": 0.03813129397035245
+    },
+    "asymmetric": {
+      "tm_asds": [
+        2.1e-15,
+        3.9e-15,
+        2.5499999999999996e-15,
+        4.2e-15,
+        2.7e-15,
+        3.4499999999999997e-15
+      ],
+      "oms_asds": [
+        1.2e-11,
+        1.8e-11,
+        9.75e-12,
+        2.1e-11,
+        1.65e-11,
+        1.35e-11
+      ],
+      "whitened_covariance_real": [
+        [
+          1.0048931736149864,
+          -0.002149186456482027,
+          1.9686279605820597e-05
+        ],
+        [
+          -0.002149186456482027,
+          1.004267010377899,
+          -0.0022519212196311163
+        ],
+        [
+          1.9686279605820597e-05,
+          -0.0022519212196311163,
+          0.9850117844124625
+        ]
+      ],
+      "whitened_covariance_imag": [
+        [
+          4.5479278976447594e-20,
+          0.0014407294358898682,
+          0.0031470177258755404
+        ],
+        [
+          -0.0014407294358898663,
+          6.733672788613088e-20,
+          0.00036390102700778373
+        ],
+        [
+          -0.0031470177258755417,
+          -0.00036390102700778286,
+          3.1370926873584355e-19
+        ]
+      ],
+      "whitened_covariance_max_error": 0.01498821558753749,
+      "power_to_truth_mean_by_xyz": [
+        1.0048931736149862,
+        1.0048692859564223,
+        1.005495467603115
+      ],
+      "validation_frequency_band_hz": [
+        0.0001,
+        0.02
+      ],
+      "validation_frequency_bins": 17194,
+      "aet_pair_order": [
+        "AE",
+        "AT",
+        "ET"
+      ],
+      "median_aet_magnitude_squared_coherence": [
+        0.018839865973129057,
+        0.0689696489245106,
+        0.04830289234241708
+      ],
+      "max_aet_imaginary_normalized_csd": [
+        0.13416584728897513,
+        0.26513419496546586,
+        0.21818051761750681
+      ],
+      "whitening_check_tolerance": 0.03813129397035245
+    }
+  },
+  "passed": true
+}
