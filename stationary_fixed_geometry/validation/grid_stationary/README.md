@@ -3,6 +3,9 @@
 This is an **incomplete, cancelled control**, prepared for the updated
 [LogPSplinePSD PR #53](https://github.com/nz-gravity/LogPSplinePSD/pull/53).
 Controlled simulation studies take priority before another long LISA fit.
+This record concerns the former ANOVA implementation. PR #53 now uses plain
+tensor Cholesky splines; the pinned old driver is retained for historical
+reproduction, not as a second supported model.
 The input is the saved ten-day,
 unequal-MOSA AET simulation with fixed 8.3-second orbit delays. The same stationary
 record was submitted to an ANOVA spectral matrix model that permits a linear time
